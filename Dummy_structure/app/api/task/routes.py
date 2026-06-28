@@ -13,7 +13,7 @@ def create_task(task_data: TaskCreate):
     if not token:
         raise HTTPException(status_code=500, detail="Todoist API token is not set.")
 
-    url = "https://api.todoist.com/rest/v2/tasks"
+    url = "https://api.todoist.com/api/v1/tasks"
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
@@ -69,3 +69,38 @@ def update_task(task_id: str, task_data: TaskUpdate):
         
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Failed to connect to Todoist: {str(e)}")
+    
+
+    
+@router.delete("/tasks/{task_id}")
+def Delete_Post(task_id: str):
+    token= os.getenv("TODOIST_API_TOKEN")
+
+    if not token:
+        raise HTTPException(status_code=500, detail="Todoist API token is not set.")
+    
+    url = f"https://api.todoist.com/api/v1/tasks/{task_id}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+    
+    try:
+        response = requests.delete(url, headers=headers)
+        
+        if response.status_code == 404:
+            raise HTTPException(status_code=404, detail="Task not found")
+        
+        if response.status_code == 403:
+            raise HTTPException(status_code=403, detail="You do not have permission to delete this task.")
+            
+        if response.status_code not in [200, 204]:
+            try:
+                error_detail = response.json()
+            except Exception:
+                error_detail = response.text
+            raise HTTPException(status_code=response.status_code, detail=error_detail)
+        
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Failed to connect to Todoist: {str(e)}")
+    

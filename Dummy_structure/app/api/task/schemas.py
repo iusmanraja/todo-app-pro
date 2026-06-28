@@ -1,10 +1,12 @@
 from pydantic import BaseModel
 from typing import Optional
-from typing import List
+from typing import Optional, List
 # Define the Pydantic schema for incoming requests
+
 class TaskCreate(BaseModel):
-    content: str
-    description: Optional[str] = None  # Description is optional in Todoist
+    content: str 
+    description: Optional[str] = None 
+
 
 
 class TaskUpdate(BaseModel):
@@ -23,3 +25,8 @@ class TaskUpdate(BaseModel):
     child_order: Optional[int] = None
     is_collapsed: Optional[bool] = None
     day_order: Optional[int] = None
+
+class DeleteTask(BaseModel):
+    task_id: str
+
+    
