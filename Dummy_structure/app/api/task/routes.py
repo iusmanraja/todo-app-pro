@@ -76,7 +76,7 @@ def update_task_endpoint(task_id: str, update_data: TaskUpdate):
     
 
     
-@router.post("/tasks/{task_id}")
+@router.delete("/tasks/{task_id}")
 def delete_task_endpoint(task_id: str):
     token= os.getenv("TODOIST_API_TOKEN")
 
