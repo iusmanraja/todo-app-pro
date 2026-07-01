@@ -1,0 +1,51 @@
+my_fastapi_project/
+│
+├── .gitignore
+├── .env
+├── README.md
+├── requirements.txt (or pyproject.toml)
+│
+├── app/
+│   ├── __init__.py
+│   ├── main.py                  # App initialization & entry point
+│   ├── config.py                # Pydantic Settings for env vars
+│   │
+│   ├── api/                     # API routers routing layer
+│   │   ├── __init__.py
+│   │   ├── deps.py              # Common dependencies (auth, db sessions)
+│   │   └── v1/
+│   │       ├── __init__.py
+│   │       ├── api.py           # Includes routers from all domains
+│   │       └── endpoints/
+│   │           ├── auth.py
+│   │           ├── users.py
+│   │           └── items.py
+│   │
+│   ├── core/                    # Global configurations & security
+│   │   ├── security.py          # Hashing, JWT tokens
+│   │   └── database.py          # DB connection sessionmaker
+│   │
+│   ├── models/                  # Database Models (SQLAlchemy, Tortoise, etc.)
+│   │   ├── __init__.py
+│   │   ├── user.py
+│   │   └── item.py
+│   │
+│   ├── schemas/                 # Pydantic Models (Data validation/serialization)
+│   │   ├── __init__.py
+│   │   ├── token.py
+│   │   ├── user.py
+│   │   └── item.py
+│   │
+│   ├── crud/                    # Database Operations (Create, Read, Update, Delete)
+│   │   ├── __init__.py
+│   │   ├── crud_user.py
+│   │   └── crud_item.py
+│   │
+│   └── services/                # Business logic layer (Optional but recommended)
+│       └── payment.py           # Heavy logic that doesn't belong in endpoints
+│
+└── tests/                       # Pytest test suite
+    ├── __init__.py
+    ├── conftest.py
+    ├── api/
+    └── crud/

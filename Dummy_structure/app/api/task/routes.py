@@ -2,7 +2,6 @@ import os
 import requests
 from fastapi import APIRouter, HTTPException
 from .schemas import TaskCreate, TaskUpdate, TaskMove
-from fastapi import APIRouter, HTTPException, status
 
 router = APIRouter()
 
@@ -146,47 +145,6 @@ def move_task_endpointt(task_id:str, move_data: TaskMove):
                 raise HTTPException(status_code=response.status_code, detail=error_detail)
 
         return {"status": "success", "message": f"Task {task_id} has been moved successfully."}
-
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"Failed to connect to Todoist: {str(e)}")
-
-
-@router.post("/tasks/{task_id}/close")
-def close_task_endpoint(task_id: str):
-    token = os.getenv("TODOIST_API_TOKEN")
-
-    if not token:
-        raise HTTPException(status_code=500, detail="Todoist API token is not set.")
-    
-    url = f"https://api.todoist.com/api/v1/tasks/{task_id}/close"
-
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json" 
-    }
-    
-    try:
-        response = requests.post(url, headers=headers)
-
-        if response.status_code == 404:
-            raise HTTPException(status_code=404, detail="Task or target destination not found.")
-        
-        if response.status_code == 401:
-            raise HTTPException(status_code=401, detail="Unauthorized: Invalid Todoist API token.")
-            
-        if response.status_code == 403:
-            raise HTTPException(status_code=403, detail="Forbidden: You don't have access to this task.")
-        
-        if response.status_code not in [200, 204]:
-            try:
-                error_detail = response.json
-
-            except Exception:
-                error_detail = response.text
-
-            raise HTTPException(status_code=response.status_code, detail=error_detail)
-        
-        return{"status": "success", "messege": f"Task {task_id} has been moved successfully."}
 
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Failed to connect to Todoist: {str(e)}")
